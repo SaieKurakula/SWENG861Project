@@ -29,7 +29,12 @@ function App() {
     }
     else if ({artist}.artist === '' && {song}.song !== '') {
         fetch('/song?song=' + {song}.song).then(res => res.json()).then(data => {
-           setSongInfo(data);
+           var tracksDisplay = '';
+	   for (var key in data) {
+              tracksDisplay += key + ':' + data[key] + '<br />';
+           }
+           //setSongInfo(tracksDisplay);
+           setSongInfo(data.toString());
            setArtistInfo('');
            setArtistSongInfo('');
         });

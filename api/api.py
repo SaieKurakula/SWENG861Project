@@ -16,7 +16,13 @@ def get_artist():
 def get_song():
     song = request.args['song']
     info = requests.get('http://ws.audioscrobbler.com/2.0/?method=track.search&track='+song+'&api_key=04c2af395292148ea292ff1fee738746&format=json')
-    return json.dumps(info.text)
+    tracksFull =json.loads(info.text)['results']['trackmatches']['track']
+    tracks = {}
+
+    for track in tracksFull:
+        tracks[track['artist']] = track['name']
+
+    return json.dumps(tracks)
 
 @app.route('/artistsong')
 def get_artist_song():
