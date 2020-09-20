@@ -16,16 +16,22 @@ function App() {
     if ({artist}.artist !== '' && {song}.song !== '') {
         fetch('/artistsong?artist='+{artist}.artist +'&song='+{song}.song).then(res => res.json()).then(data => {
            setArtistSongInfo(data);
+	   setArtistInfo('');
+	   setSongInfo('');
         });
     }
     else if ({artist}.artist !== '' && {song}.song === '') {
         fetch('/artist?artist=' + {artist}.artist).then(res => res.json()).then(data => {
            setArtistInfo(data);
+	   setSongInfo('');
+           setArtistSongInfo('');
         });
     }
     else if ({artist}.artist === '' && {song}.song !== '') {
         fetch('/song?song=' + {song}.song).then(res => res.json()).then(data => {
            setSongInfo(data);
+           setArtistInfo('');
+           setArtistSongInfo('');
         });
     }
     else {
