@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './App.css';
 
 function App() {
+  const [headerText, setHeaderText] = useState('');
   const [artist, setArtist] = useState('');
   const [artistInfo, setArtistInfo] = useState('');
   const [song, setSong] = useState('');
@@ -18,6 +19,7 @@ function App() {
            setArtistSongInfo(data);
 	   setArtistInfo('');
 	   setSongInfo('');
+           setHeaderText('Artist & Song Information');
         });
     }
     else if ({artist}.artist !== '' && {song}.song === '') {
@@ -25,18 +27,22 @@ function App() {
            setArtistInfo(data);
 	   setSongInfo('');
            setArtistSongInfo('');
+           setHeaderText('Artist Information');
         });
     }
     else if ({artist}.artist === '' && {song}.song !== '') {
         fetch('/song?song=' + {song}.song).then(res => res.json()).then(data => {
-           var tracksDisplay = '';
-	   for (var key in data) {
-              tracksDisplay += key + ':' + data[key] + '<br />';
+           var tracksDisplay = [];
+	   var keys = Object.getOwnPropertyNames(data);
+           var i = 0;
+	   while (i < keys.length) {
+              tracksDisplay[keys[i]] = data[keys[i]];
+              i++;
            }
-           //setSongInfo(tracksDisplay);
-           setSongInfo(data.toString());
+           setSongInfo(tracksDisplay);
            setArtistInfo('');
            setArtistSongInfo('');
+           setHeaderText('Song(s) Information');
         });
     }
     else {
@@ -58,6 +64,16 @@ function App() {
 
   }
 
+const Example = ({ data }) =>
+  Object.entries(data).map(([k, v]) => (
+    <div key={k}>
+      {k}: {v}
+      <br />
+      <br />
+    </div>
+  ));
+
+
   return (
     <div className="App">
       <form onSubmit={mySubmitHandler}>
@@ -67,16 +83,16 @@ function App() {
         <input name='song' onChange={myChangeHandler} type="text" /><br /> <br />
         <input type="submit" value="Submit" />
       </form>
+	   <h1> {headerText} </h1>
 	<div>
-	   <h1> Artist Info </h1>
 	   <p>{artistInfo}</p>
         </div>
 	<div>
-	   <h1> Song Info </h1>
-	   <p>{songInfo}</p>
+           <div>
+              <Example data={songInfo} />
+	   </div>
         </div>
 	<div>
-	   <h1> Artist Song Info </h1>
 	   <p>{artistSongInfo}</p>
         </div>
     </div>
