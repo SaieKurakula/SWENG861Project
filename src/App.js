@@ -64,10 +64,37 @@ function App() {
 
   }
 
-const Example = ({ data }) =>
+
+const getArtistFromSongSearch = (artistName) => e =>  {
+    e.preventDefault();
+    alert(artistName);
+    fetch('/artist?artist=' + artistName).then(res => res.json()).then(data => {
+        setArtistInfo(data);
+	setSongInfo('');
+        setArtistSongInfo('');
+        setHeaderText('Artist Information');
+    });
+}
+
+const getArtistSongFullInfo = (artistName, songName) => e =>  {
+    e.preventDefault();
+    alert(artistName);
+    fetch('/artistsong?artist='+artistName +'&song='+songName).then(res => res.json()).then(data => {
+        setArtistSongInfo(data);
+        setArtistInfo('');
+        setSongInfo('');
+        setHeaderText('Artist & Song Information');
+    });
+}
+
+const ArtistSongMap = ({ data }) =>
   Object.entries(data).map(([k, v]) => (
     <div key={k}>
       {k}: {v}
+      <br />
+      <button onClick={getArtistFromSongSearch(k)}>Info on {k}</button>
+      <br />
+      <button onClick={getArtistSongFullInfo(k,v)}>Info on {v} by {k}</button>
       <br />
       <br />
     </div>
@@ -75,7 +102,15 @@ const Example = ({ data }) =>
 
 
   return (
+
     <div className="App">
+<link
+  rel="stylesheet"
+  href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+  integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+  crossorigin="anonymous"
+/>
+
       <form onSubmit={mySubmitHandler}>
         <p>Enter Singer/Artist:</p>
         <input name='artist' onChange={myChangeHandler} type="text" />
@@ -89,7 +124,7 @@ const Example = ({ data }) =>
         </div>
 	<div>
            <div>
-              <Example data={songInfo} />
+              <ArtistSongMap data={songInfo} />
 	   </div>
         </div>
 	<div>
