@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { JSONToHTMLTable } from '@kevincobain2000/json-to-html-table'
 import './App.css';
 
 function App() {
@@ -24,7 +25,16 @@ function App() {
     }
     else if ({artist}.artist !== '' && {song}.song === '') {
         fetch('/artist?artist=' + {artist}.artist).then(res => res.json()).then(data => {
-           setArtistInfo(data);
+           //data = JSON.parse(data);
+           //alert(typeof(data));
+           var artistDisplay = [];
+	   var keys = Object.getOwnPropertyNames(data);
+           var i = 0;
+	   while (i < keys.length) {
+              artistDisplay[keys[i]] = data[keys[i]];
+              i++;
+           }
+           setArtistInfo(artistDisplay);
 	   setSongInfo('');
            setArtistSongInfo('');
            setHeaderText('Artist Information');
@@ -67,7 +77,6 @@ function App() {
 
 const getArtistFromSongSearch = (artistName) => e =>  {
     e.preventDefault();
-    alert(artistName);
     fetch('/artist?artist=' + artistName).then(res => res.json()).then(data => {
         setArtistInfo(data);
 	setSongInfo('');
@@ -78,7 +87,6 @@ const getArtistFromSongSearch = (artistName) => e =>  {
 
 const getArtistSongFullInfo = (artistName, songName) => e =>  {
     e.preventDefault();
-    alert(artistName);
     fetch('/artistsong?artist='+artistName +'&song='+songName).then(res => res.json()).then(data => {
         setArtistSongInfo(data);
         setArtistInfo('');
@@ -89,17 +97,26 @@ const getArtistSongFullInfo = (artistName, songName) => e =>  {
 
 const ArtistSongMap = ({ data }) =>
   Object.entries(data).map(([k, v]) => (
-    <div key={k}>
-      {k}: {v}
+    <div >
+      <h3>{k}: {v}</h3>
       <br />
-      <button onClick={getArtistFromSongSearch(k)}>Info on {k}</button>
+      <button type="button" class="btn btn-primary" onClick={getArtistSongFullInfo(k,v)}>Info on {v} by {k}</button>
       <br />
-      <button onClick={getArtistSongFullInfo(k,v)}>Info on {v} by {k}</button>
+      <br />
+      <button type="button" class="btn btn-secondary" onClick={getArtistFromSongSearch(k)}>Info on {k}</button>
+      <br />
       <br />
       <br />
     </div>
   ));
 
+const ArtistInfoMap = ({ data }) =>
+  Object.entries(data).map(([k, v]) => (
+    <tr>
+      <td>{k}</td>
+      <td>{v}</td>
+    </tr>
+  ));
 
   return (
 
@@ -118,9 +135,15 @@ const ArtistSongMap = ({ data }) =>
         <input name='song' onChange={myChangeHandler} type="text" /><br /> <br />
         <input type="submit" value="Submit" />
       </form>
-	   <h1> {headerText} </h1>
+      <br />
+      <br />
+	   <h2><u>{headerText}</u></h2>
+      <br />
 	<div>
-	   <p>{artistInfo}</p>
+           <table>
+	   <ArtistInfoMap data ={artistInfo} />
+           </table>
+           <JSONToHTMLTable data={artistInfo} tableClassName="table table-sm"/>
         </div>
 	<div>
            <div>

@@ -10,7 +10,20 @@ app = Flask(__name__)
 def get_artist():
     artist = request.args['artist']
     info = requests.get('http://theaudiodb.com/api/v1/json/1/search.php?s=' + artist)
-    return json.dumps(info.text)
+    artistInfo = {}
+    artistInfo = json.loads(info.text)['artists'][0]
+
+    otherLangBios = ['strBiographyFR', 'strBiographyCN', 'strBiographyPT', 'strBiographyIT',
+                    'strBiographyJP', 'strBiographyRU', 'strBiographyES', 'strBiographyNL',
+                    'strBiographyHU', 'strBiographyDE', 'strBiographySE', 'strBiographyNO']
+
+    newArtistInfoDict = {}
+
+    for k,v in artistInfo.items():
+        if k not in otherLangBios:
+            newArtistInfoDict[k] = v
+    
+    return json.dumps(newArtistInfoDict)
 
 @app.route('/song')
 def get_song():
