@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { JSONToHTMLTable } from '@kevincobain2000/json-to-html-table'
 import './App.css';
 
 function App() {
@@ -11,13 +10,25 @@ function App() {
   const [artistSongInfo, setArtistSongInfo] = useState('');
 
 
+  var handleData = (data) => {
+      var modifiedData = [];
+      var keys = Object.getOwnPropertyNames(data);
+      var i = 0;
+      while (i < keys.length) {
+         modifiedData[keys[i]] = data[keys[i]];
+         i++;
+      }
+      return modifiedData
+  }
+
   var mySubmitHandler = (event) => {
 
     event.preventDefault();
 
     if ({artist}.artist !== '' && {song}.song !== '') {
         fetch('/artistsong?artist='+{artist}.artist +'&song='+{song}.song).then(res => res.json()).then(data => {
-           setArtistSongInfo(data);
+           var artistSongDisplay = handleData(data);
+           setArtistSongInfo(artistSongDisplay);
 	   setArtistInfo('');
 	   setSongInfo('');
            setHeaderText('Artist & Song Information');
@@ -25,15 +36,7 @@ function App() {
     }
     else if ({artist}.artist !== '' && {song}.song === '') {
         fetch('/artist?artist=' + {artist}.artist).then(res => res.json()).then(data => {
-           //data = JSON.parse(data);
-           //alert(typeof(data));
-           var artistDisplay = [];
-	   var keys = Object.getOwnPropertyNames(data);
-           var i = 0;
-	   while (i < keys.length) {
-              artistDisplay[keys[i]] = data[keys[i]];
-              i++;
-           }
+           var artistDisplay = handleData(data);
            setArtistInfo(artistDisplay);
 	   setSongInfo('');
            setArtistSongInfo('');
@@ -42,13 +45,7 @@ function App() {
     }
     else if ({artist}.artist === '' && {song}.song !== '') {
         fetch('/song?song=' + {song}.song).then(res => res.json()).then(data => {
-           var tracksDisplay = [];
-	   var keys = Object.getOwnPropertyNames(data);
-           var i = 0;
-	   while (i < keys.length) {
-              tracksDisplay[keys[i]] = data[keys[i]];
-              i++;
-           }
+           var tracksDisplay = handleData(data);
            setSongInfo(tracksDisplay);
            setArtistInfo('');
            setArtistSongInfo('');
@@ -78,7 +75,8 @@ function App() {
 const getArtistFromSongSearch = (artistName) => e =>  {
     e.preventDefault();
     fetch('/artist?artist=' + artistName).then(res => res.json()).then(data => {
-        setArtistInfo(data);
+        var artistFromSongList = handleData(data);
+        setArtistInfo(artistFromSongList);
 	setSongInfo('');
         setArtistSongInfo('');
         setHeaderText('Artist Information');
@@ -88,7 +86,8 @@ const getArtistFromSongSearch = (artistName) => e =>  {
 const getArtistSongFullInfo = (artistName, songName) => e =>  {
     e.preventDefault();
     fetch('/artistsong?artist='+artistName +'&song='+songName).then(res => res.json()).then(data => {
-        setArtistSongInfo(data);
+        var artistSongFromSongList = handleData(data);
+        setArtistSongInfo(artistSongFromSongList);
         setArtistInfo('');
         setSongInfo('');
         setHeaderText('Artist & Song Information');
@@ -110,7 +109,7 @@ const ArtistSongMap = ({ data }) =>
     </div>
   ));
 
-const ArtistInfoMap = ({ data }) =>
+const InfoMap = ({ data }) =>
   Object.entries(data).map(([k, v]) => (
     <tr>
       <td>{k}</td>
@@ -121,12 +120,12 @@ const ArtistInfoMap = ({ data }) =>
   return (
 
     <div className="App">
-<link
-  rel="stylesheet"
-  href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
-  integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
-  crossorigin="anonymous"
-/>
+        <link
+            rel="stylesheet"
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+            integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+            crossorigin="anonymous"
+        />
 
       <form onSubmit={mySubmitHandler}>
         <p>Enter Singer/Artist:</p>
@@ -140,10 +139,9 @@ const ArtistInfoMap = ({ data }) =>
 	   <h2><u>{headerText}</u></h2>
       <br />
 	<div>
-           <table>
-	   <ArtistInfoMap data ={artistInfo} />
+           <table class="table">
+	       <InfoMap data ={artistInfo} />
            </table>
-           <JSONToHTMLTable data={artistInfo} tableClassName="table table-sm"/>
         </div>
 	<div>
            <div>
@@ -151,7 +149,9 @@ const ArtistInfoMap = ({ data }) =>
 	   </div>
         </div>
 	<div>
-	   <p>{artistSongInfo}</p>
+           <table class="table">
+               <InfoMap data={artistSongInfo} />
+           </table>
         </div>
     </div>
   );

@@ -42,4 +42,32 @@ def get_artist_song():
     artist = request.args['artist']
     song = request.args['song']
     info = requests.get('http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=04c2af395292148ea292ff1fee738746&artist='+artist+'&track='+song+'&format=json')
-    return json.dumps(info.text)
+    songInfo = json.loads(info.text)['track']
+
+    if 'streamable' in songInfo:
+        del songInfo['streamable']
+    if 'toptags' in songInfo:
+        del songInfo['toptags']
+
+    if 'artist' in songInfo:
+        if 'name' in songInfo['artist']:
+            songInfo['artistName'] = songInfo['artist']['name']
+        if 'url' in songInfo['artist']:
+            songInfo['artistURL'] =  songInfo['artist']['url']
+        del songInfo['artist']
+
+    if 'album' in songInfo:
+        if 'title' in songInfo['album']:
+            songInfo['albumTitle'] = songInfo['album']['title']
+        if 'url' in songInfo['album']:
+            songInfo['albumURL'] =  songInfo['album']['url']
+        del songInfo['album']
+
+    if 'wiki' in songInfo:
+        if 'summary' in songInfo['wiki']:
+            songInfo['wikiSummary'] =  songInfo['wiki']['summary']
+        del songInfo['wiki']
+
+
+
+    return json.dumps(songInfo)
