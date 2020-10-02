@@ -96,7 +96,7 @@ const getArtistSongFullInfo = (artistName, songName) => e =>  {
 
 const ArtistSongMap = ({ data }) =>
   Object.entries(data).map(([k, v]) => (
-    <div >
+    <div class="textCenter">
       <h3>{k}: {v}</h3>
       <br />
       <button type="button" class="btn btn-primary" onClick={getArtistSongFullInfo(k,v)}>Info on {v} by {k}</button>
@@ -112,8 +112,8 @@ const ArtistSongMap = ({ data }) =>
 const InfoMap = ({ data }) =>
   Object.entries(data).map(([k, v]) => (
     <tr>
-      <td>{k}</td>
-      <td>{v}</td>
+      <td class="col-2">{k}</td>
+      <td class="col-4">{v}</td>
     </tr>
   ));
 
@@ -126,20 +126,29 @@ const InfoMap = ({ data }) =>
             integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
             crossorigin="anonymous"
         />
-
+      <body>
+      <div class="d-flex justify-content-center">
+      <br />
+      <br />
       <form onSubmit={mySubmitHandler}>
         <p>Enter Singer/Artist:</p>
         <input name='artist' onChange={myChangeHandler} type="text" />
+        <br />
         <p>And/Or Song Title:</p>
         <input name='song' onChange={myChangeHandler} type="text" /><br /> <br />
         <input type="submit" value="Submit" />
       </form>
+      </div>
       <br />
       <br />
-	   <h2><u>{headerText}</u></h2>
+      <div class="row justify-content-center">
+	   <h2 class="row justify-content-center"><u>{headerText}</u></h2>
       <br />
+      </div>
+      <div>
+
 	<div>
-           <table class="table">
+           <table class="table ">
 	       <InfoMap data ={artistInfo} />
            </table>
         </div>
@@ -149,10 +158,12 @@ const InfoMap = ({ data }) =>
 	   </div>
         </div>
 	<div>
-           <table class="table">
+           <table class="table ">
                <InfoMap data={artistSongInfo} />
            </table>
         </div>
+       </div>
+       </body>
     </div>
   );
 }
