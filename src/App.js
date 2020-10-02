@@ -96,7 +96,7 @@ const getArtistSongFullInfo = (artistName, songName) => e =>  {
 
 const ArtistSongMap = ({ data }) =>
   Object.entries(data).map(([k, v]) => (
-    <div class="textCenter">
+    <div class="text-center">
       <h3>{k}: {v}</h3>
       <br />
       <button type="button" class="btn btn-primary" onClick={getArtistSongFullInfo(k,v)}>Info on {v} by {k}</button>
