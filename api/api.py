@@ -51,7 +51,8 @@ def get_song():
             tracks = {}
 
             for track in tracksFull:
-                tracks[track['artist']] = track['name']
+                if track['artist'].isascii() and track['name'].isascii():
+                    tracks[track['artist']] = track['name']
 
             return json.dumps(tracks)
         except:
