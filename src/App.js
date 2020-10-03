@@ -46,6 +46,9 @@ function showSpinner() {
         setArtistInfo('');
         setSongInfo('');
         setHeaderText('Artist & Song Information');
+      })
+      .catch((error) => {
+        alert('Error: ', error);
       });
     }
     else if ({artist}.artist !== '' && {song}.song === '') {
@@ -56,6 +59,9 @@ function showSpinner() {
         setSongInfo('');
         setArtistSongInfo('');
         setHeaderText('Artist Information');
+      })
+      .catch((error) => {
+        alert('Error: ', error);
       });
     }
     else if ({artist}.artist === '' && {song}.song !== '') {
@@ -66,6 +72,9 @@ function showSpinner() {
         setArtistInfo('');
         setArtistSongInfo('');
         setHeaderText('Song(s) Information');
+      })
+      .catch((error) => {
+        alert('Error: ', error);
       });
     }
     else {
@@ -98,6 +107,9 @@ function showSpinner() {
       setSongInfo('');
       setArtistSongInfo('');
       setHeaderText('Artist Information');
+    })
+    .catch((error) => {
+      alert('Error: ', error);
     });
   }
 
@@ -111,6 +123,9 @@ function showSpinner() {
       setArtistInfo('');
       setSongInfo('');
       setHeaderText('Artist & Song Information');
+    })
+    .catch((error) => {
+      alert('Error: ', error);
     });
   }
 
