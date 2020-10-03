@@ -21,13 +21,27 @@ function App() {
     return modifiedData
   }
 
+const spinner = document.getElementById("spinner");
+
+function showSpinner() {
+  spinner.className = "show";
+  setTimeout(() => {
+    spinner.className = spinner.className.replace("show", "");
+  }, 5000);
+}
+
+  function hideSpinner() {
+    spinner.className = spinner.className.replace("show", "");
+  }
+
   var mySubmitHandler = (event) => {
 
     event.preventDefault();
-
+    showSpinner();
     if ({artist}.artist !== '' && {song}.song !== '') {
       fetch('/artistsong?artist='+{artist}.artist +'&song='+{song}.song).then(res => res.json()).then(data => {
         var artistSongDisplay = handleData(data);
+        hideSpinner();
         setArtistSongInfo(artistSongDisplay);
         setArtistInfo('');
         setSongInfo('');
@@ -37,6 +51,7 @@ function App() {
     else if ({artist}.artist !== '' && {song}.song === '') {
       fetch('/artist?artist=' + {artist}.artist).then(res => res.json()).then(data => {
         var artistDisplay = handleData(data);
+        hideSpinner();
         setArtistInfo(artistDisplay);
         setSongInfo('');
         setArtistSongInfo('');
@@ -46,6 +61,7 @@ function App() {
     else if ({artist}.artist === '' && {song}.song !== '') {
       fetch('/song?song=' + {song}.song).then(res => res.json()).then(data => {
         var tracksDisplay = handleData(data);
+        hideSpinner();
         setSongInfo(tracksDisplay);
         setArtistInfo('');
         setArtistSongInfo('');
@@ -73,9 +89,11 @@ function App() {
 
 
   const getArtistFromSongSearch = (artistName) => e =>  {
+    showSpinner();
     e.preventDefault();
     fetch('/artist?artist=' + artistName).then(res => res.json()).then(data => {
       var artistFromSongList = handleData(data);
+      hideSpinner();
       setArtistInfo(artistFromSongList);
       setSongInfo('');
       setArtistSongInfo('');
@@ -84,9 +102,11 @@ function App() {
   }
 
   const getArtistSongFullInfo = (artistName, songName) => e =>  {
+    showSpinner();
     e.preventDefault();
     fetch('/artistsong?artist='+artistName +'&song='+songName).then(res => res.json()).then(data => {
       var artistSongFromSongList = handleData(data);
+      hideSpinner();
       setArtistSongInfo(artistSongFromSongList);
       setArtistInfo('');
       setSongInfo('');
@@ -128,6 +148,7 @@ function App() {
        />
       <body>
         <div class="d-flex justify-content-center">
+          <div id="spinner"></div>
           <br />
           <br />
           <form onSubmit={mySubmitHandler}>
