@@ -5,7 +5,7 @@ https://blog.miguelgrinberg.com/post/how-to-create-a-react--flask-project
 This project searches for artists and/or song information based on input from user.
 The front-end is a React (Javascript) funtional component with bootstrap doing the heavy CSS lifting.
 The front end calls the back-end through 1 of 5 fetch calls depending on user input.
-The back-end is a Flask (Python) api that also makes api calls to get the full info from either the audiodb https://www.theaudiodb.com/api_guide.php or lastfm api https://www.last.fm/api
+The back-end is a Flask (Python) REST api that also makes api calls to get the full info from either the audiodb https://www.theaudiodb.com/api_guide.php or lastfm REST api's https://www.last.fm/api
 
 ## Info
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
