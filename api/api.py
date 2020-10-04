@@ -6,6 +6,7 @@ from flask import jsonify
 
 app = Flask(__name__)
 
+#get Artist information
 @app.route('/artist')
 def get_artist():
     artist = request.args['artist']
@@ -26,6 +27,7 @@ def get_artist():
 
             newArtistInfoDict = {}
 
+            #Remove other language biographies
             for k,v in artistInfo.items():
                 if k not in otherLangBios:
                     newArtistInfoDict[k] = v
@@ -36,6 +38,7 @@ def get_artist():
     else:
         return json.dumps({'error':'Artist Not Found'})
 
+#get Song information
 @app.route('/song')
 def get_song():
     song = request.args['song']
@@ -50,6 +53,8 @@ def get_song():
             tracksFull =json.loads(info.text)['results']['trackmatches']['track']
             tracks = {}
 
+            #Remove info if chars are non-ascii
+            #TODO: add ID's and map through nested on front-end to do full track search
             for track in tracksFull:
                 if track['artist'].isascii() and track['name'].isascii():
                     tracks[track['artist']] = track['name']
@@ -60,7 +65,7 @@ def get_song():
     else:
         return json.dumps({'error':'Song not found'})
 
-
+#get Artist and Song Information
 @app.route('/artistsong')
 def get_artist_song():
     arst = request.args['artist']
@@ -75,11 +80,13 @@ def get_artist_song():
         try:
             songInfo = json.loads(info.text)['track']
 
+            #remove streamable and toptags info
             if 'streamable' in songInfo:
                 del songInfo['streamable']
             if 'toptags' in songInfo:
                 del songInfo['toptags']
 
+            #organize artistname and artist url and delete other info
             if 'artist' in songInfo:
                 if 'name' in songInfo['artist']:
                     songInfo['artistName'] = songInfo['artist']['name']
@@ -87,6 +94,7 @@ def get_artist_song():
                     songInfo['artistURL'] =  songInfo['artist']['url']
                 del songInfo['artist']
 
+            #organize album title and album url and delete other info
             if 'album' in songInfo:
                 if 'title' in songInfo['album']:
                     songInfo['albumTitle'] = songInfo['album']['title']
@@ -94,6 +102,7 @@ def get_artist_song():
                     songInfo['albumURL'] =  songInfo['album']['url']
                 del songInfo['album']
 
+            #organize wiki info and delete other info
             if 'wiki' in songInfo:
                 if 'summary' in songInfo['wiki']:
                     songInfo['wikiSummary'] =  songInfo['wiki']['summary']
