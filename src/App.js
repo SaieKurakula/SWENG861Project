@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 
 function App() {
@@ -21,21 +21,26 @@ function App() {
     return modifiedData
   }
 
-  const spinner = document.getElementById("spinner");
-  const errorAlert = document.getElementById("errorAlert");
+  var spinner = document.getElementById("spinner");
+  var errorAlert = document.getElementById("errorAlert");
 
-  function showSpinner() {
+  useEffect(() => {
+    spinner = document.getElementById("spinner");
+    errorAlert = document.getElementById("errorAlert");
+  }, []);
+
+  var showSpinner = () => {
     spinner.className = "show";
     setTimeout(() => {
       spinner.className = spinner.className.replace("show", "");
     }, 5000);
   }
 
-  function hideSpinner() {
+  var hideSpinner = () => {
     spinner.className = spinner.className.replace("show", "");
   }
 
-  function showErrorAlert() {
+  var showErrorAlert = () => {
     hideSpinner();
     errorAlert.className = "show";
     setArtistSongInfo('');
@@ -43,7 +48,7 @@ function App() {
     setSongInfo('');
   }
 
-  function hideErrorAlert() {
+  var hideErrorAlert = () => {
     errorAlert.className = errorAlert.className.replace("show", "");
   }
 
@@ -51,6 +56,7 @@ function App() {
     hideErrorAlert();
     showSpinner();
     event.preventDefault();
+
     if ({artist}.artist !== '' && {song}.song !== '') {
       fetch('/artistsong?artist='+{artist}.artist +'&song='+{song}.song).then(res => res.json()).then(data => {
         var keys = Object.getOwnPropertyNames(data);
@@ -121,12 +127,12 @@ function App() {
   }
 
   var myChangeHandler = (event) => {
-    let nam = event.target.name;
+    let name = event.target.name;
     let val = event.target.value;
-    if (nam==='artist') {
+    if (name==='artist') {
       setArtist(val);
     }
-    else if (nam === 'song') {
+    else if (name === 'song') {
       setSong(val);
     }
   }
@@ -184,18 +190,18 @@ function App() {
 
   const ArtistSongMap = ({ data }) =>
     Object.entries(data).map(([k, v]) => (
-      <div class="text-center margin-top-2">
+      <div key={k+v} className="text-center margin-top-2">
         <h3>{k}: {v}</h3>
-        <button type="button" class="btn btn-primary" onClick={getArtistSongFullInfo(k,v)}>Info on {v} by {k}</button><br /><br />
-        <button type="button" class="btn btn-secondary" onClick={getArtistFromSongSearch(k)}>Info on {k}</button>
+        <button type="button" className="btn btn-primary" onClick={getArtistSongFullInfo(k,v)}>Info on {v} by {k}</button><br /><br />
+        <button type="button" className="btn btn-secondary" onClick={getArtistFromSongSearch(k)}>Info on {k}</button>
       </div>
   ));
 
   const InfoMap = ({ data }) =>
     Object.entries(data).map(([k, v]) => (
-      <tr>
-        <td class="col-2">{k}</td>
-        <td class="col-4">{v}</td>
+      <tr key={k}>
+        <td className="col-2">{k}</td>
+        <td className="col-4">{v}</td>
       </tr>
   ));
 
@@ -206,11 +212,10 @@ function App() {
          rel="stylesheet"
          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
-         crossorigin="anonymous"
+         crossOrigin="anonymous"
        />
-      <body>
-      <div class="container text-center">
-        <div class="center text-center margin-top-5">
+      <div className="container text-center">
+        <div className="center text-center margin-top-5">
           <form onSubmit={mySubmitHandler}>
             <p>Enter Singer/Artist:</p>
             <input name='artist' onChange={myChangeHandler} type="text" />
@@ -219,19 +224,21 @@ function App() {
             <input type="submit" value="Submit" />
           </form>
         </div>
-        <div class="top-margin-5" id="spinner"></div>
-        <div class="row">
-          <h2 class="row margin-auto"><u>{headerText}</u></h2>
+        <div className="top-margin-5" id="spinner"></div>
+        <div className="row">
+          <h2 className="row margin-auto"><u>{headerText}</u></h2>
         </div>
         <div id="errorAlert">
-          <div class="row">
-            <h2 class="margin-auto">{errorInfo}</h2>
+          <div className="row">
+            <h2 className="margin-auto">{errorInfo}</h2>
           </div>
         </div>
         <div>
 	  <div>
-            <table class="table ">
-	      <InfoMap data ={artistInfo} />
+            <table className="table ">
+              <tbody>
+	        <InfoMap data ={artistInfo} />
+              </tbody>
             </table>
           </div>
 	  <div>
@@ -240,13 +247,14 @@ function App() {
 	    </div>
           </div>
 	  <div>
-            <table class="table ">
-              <InfoMap data={artistSongInfo} />
+            <table className="table ">
+              <tbody>
+                <InfoMap data={artistSongInfo} />
+              </tbody>
             </table>
           </div>
         </div>
       </div>
-      </body>
     </div>
   );
 }
