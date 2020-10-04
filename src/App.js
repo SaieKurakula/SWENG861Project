@@ -10,7 +10,7 @@ function App() {
   const [artistSongInfo, setArtistSongInfo] = useState('');
   const [errorInfo, setErrorInfo] = useState('');
 
-
+  // Process Data for mapping
   var handleData = (data, keys) => {
     var modifiedData = [];
     var i = 0;
@@ -21,14 +21,17 @@ function App() {
     return modifiedData
   }
 
+  // I'm not sure why this works, but it does. Don't Delete
   var spinner = document.getElementById("spinner");
   var errorAlert = document.getElementById("errorAlert");
 
+  // Just in case, load spinner and error alert after DOM loaded
   useEffect(() => {
     spinner = document.getElementById("spinner");
     errorAlert = document.getElementById("errorAlert");
   }, []);
 
+  // Show spinner
   var showSpinner = () => {
     spinner.className = "show";
     setTimeout(() => {
@@ -36,10 +39,12 @@ function App() {
     }, 5000);
   }
 
+  // Hide Spinner
   var hideSpinner = () => {
     spinner.className = spinner.className.replace("show", "");
   }
 
+  // Show Error Alert Div
   var showErrorAlert = () => {
     hideSpinner();
     errorAlert.className = "show";
@@ -48,10 +53,12 @@ function App() {
     setSongInfo('');
   }
 
+  // Hide Error Alert Div
   var hideErrorAlert = () => {
     errorAlert.className = errorAlert.className.replace("show", "");
   }
 
+  // Handle form submission and API Calls
   var mySubmitHandler = (event) => {
     hideErrorAlert();
     showSpinner();
@@ -126,6 +133,7 @@ function App() {
     }
   }
 
+  // Handle user input in the form
   var myChangeHandler = (event) => {
     let name = event.target.name;
     let val = event.target.value;
@@ -137,7 +145,7 @@ function App() {
     }
   }
 
-
+  // Get Song by artist from song search buttons
   const getArtistFromSongSearch = (artistName) => e =>  {
     hideErrorAlert();
     showSpinner();
@@ -163,6 +171,7 @@ function App() {
     });
   }
 
+  // Get Artist from song search button
   const getArtistSongFullInfo = (artistName, songName) => e =>  {
     hideErrorAlert();
     showSpinner();
@@ -188,6 +197,7 @@ function App() {
     });
   }
 
+  // Map buttons from song search
   const ArtistSongMap = ({ data }) =>
     Object.entries(data).map(([k, v]) => (
       <div key={k+v} className="text-center margin-top-2">
@@ -197,6 +207,7 @@ function App() {
       </div>
   ));
 
+  // Map info tables
   const InfoMap = ({ data }) =>
     Object.entries(data).map(([k, v]) => (
       <tr key={k}>
