@@ -58,6 +58,20 @@ function App() {
     errorAlert.className = errorAlert.className.replace("show", "");
   }
 
+
+  function handleErrors(errorText) {
+    showErrorAlert();
+    setErrorInfo('Error: ' + errorText);
+  }
+
+  function fetchErrors(response) {
+    if (!response.ok) {
+        handleErrors(response.status + response.statusText);
+    }
+    return response.json();
+  }
+
+
   // Handle form submission and API Calls
   var mySubmitHandler = (event) => {
     hideErrorAlert();
@@ -65,71 +79,70 @@ function App() {
     event.preventDefault();
 
     if ({artist}.artist !== '' && {song}.song !== '') {
-      fetch('/artistsong?artist='+{artist}.artist +'&song='+{song}.song).then(res => res.json()).then(data => {
-        var keys = Object.getOwnPropertyNames(data);
-        if (keys[0] !== "error") {
-          var artistSongDisplay = handleData(data, keys);
-          hideSpinner();
-          setArtistSongInfo(artistSongDisplay);
-          setArtistInfo('');
-          setSongInfo('');
-          setHeaderText('Artist & Song Information');
-        }
-        else {
-          showErrorAlert();
-          setErrorInfo('Error: ' + data[keys[0]]);
-        }
-      })
-      .catch((error) => {
-        showErrorAlert();
-        setErrorInfo('Error: ' + error);
-      });
+      fetch('/artistsong?artist='+{artist}.artist +'&song='+{song}.song)
+        .then(fetchErrors)
+        .then(data => {
+          var keys = Object.getOwnPropertyNames(data);
+          if (keys[0] !== "error") {
+            var artistSongDisplay = handleData(data, keys);
+            hideSpinner();
+            setArtistSongInfo(artistSongDisplay);
+            setArtistInfo('');
+            setSongInfo('');
+            setHeaderText('Artist & Song Information');
+          }
+          else {
+            handleErrors(data[keys[0]]);
+          }
+        })
+        .catch((error) => {
+          handleErrors(error);
+        });
     }
     else if ({artist}.artist !== '' && {song}.song === '') {
-      fetch('/artist?artist=' + {artist}.artist).then(res => res.json()).then(data => {
-        var keys = Object.getOwnPropertyNames(data);
-        if (keys[0] !== "error") {
-          var artistDisplay = handleData(data, keys);
-          hideSpinner();
-          setArtistInfo(artistDisplay);
-          setSongInfo('');
-          setArtistSongInfo('');
-          setHeaderText('Artist Information');
-        }
-        else {
-          showErrorAlert();
-          setErrorInfo('Error: ' + data[keys[0]]);
-        }
-      })
-      .catch((error) => {
-        showErrorAlert();
-        setErrorInfo('Error: ' + error);
-      });
+      fetch('/artist?artist=' + {artist}.artist)
+        .then(fetchErrors)
+        .then(data => {
+          var keys = Object.getOwnPropertyNames(data);
+          if (keys[0] !== "error") {
+            var artistDisplay = handleData(data, keys);
+            hideSpinner();
+            setArtistInfo(artistDisplay);
+            setSongInfo('');
+            setArtistSongInfo('');
+            setHeaderText('Artist Information');
+          }
+          else {
+            handleErrors(data[keys[0]]);
+          }
+        })
+        .catch((error) => {
+          handleErrors(error);
+        });
     }
     else if ({artist}.artist === '' && {song}.song !== '') {
-      fetch('/song?song=' + {song}.song).then(res => res.json()).then(data => {
-        var keys = Object.getOwnPropertyNames(data);
-        if (keys[0] !== "error") {
-          var tracksDisplay = handleData(data, keys);
-          hideSpinner();
-          setSongInfo(tracksDisplay);
-          setArtistInfo('');
-          setArtistSongInfo('');
-          setHeaderText('Song(s) Information');
-        }
-        else {
-          showErrorAlert();
-          setErrorInfo('Error: ' + data[keys[0]]);
-        }
-      })
-      .catch((error) => {
-        showErrorAlert();
-        setErrorInfo('Error: ' + error);
-      });
+      fetch('/song?song=' + {song}.song)
+        .then(fetchErrors)
+        .then(data => {
+          var keys = Object.getOwnPropertyNames(data);
+          if (keys[0] !== "error") {
+            var tracksDisplay = handleData(data, keys);
+            hideSpinner();
+            setSongInfo(tracksDisplay);
+            setArtistInfo('');
+            setArtistSongInfo('');
+            setHeaderText('Song(s) Information');
+          }
+          else {
+            handleErrors(data[keys[0]]);
+          }
+        })
+        .catch((error) => {
+          handleErrors(error);
+        });
     }
     else {
-      showErrorAlert();
-      setErrorInfo("Please Enter an artist, a song, or both.");
+      handleErrors("Please Enter an artist, a song, or both.");
     }
   }
 
@@ -150,25 +163,25 @@ function App() {
     hideErrorAlert();
     showSpinner();
     e.preventDefault();
-    fetch('/artist?artist=' + artistName).then(res => res.json()).then(data => {
-      var keys = Object.getOwnPropertyNames(data);
-      if (keys[0] !== "error") {
-        var artistFromSongList = handleData(data, keys);
-        hideSpinner();
-        setArtistInfo(artistFromSongList);
-        setSongInfo('');
-        setArtistSongInfo('');
-        setHeaderText('Artist Information');
-      }
-      else {
-        showErrorAlert();
-        setErrorInfo('Error: ' + data[keys[0]]);
-      }
-    })
-    .catch((error) => {
-      showErrorAlert();
-      setErrorInfo('Error: ' + error);
-    });
+    fetch('/artist?artist=' + artistName)
+      .then(fetchErrors)
+      .then(data => {
+        var keys = Object.getOwnPropertyNames(data);
+        if (keys[0] !== "error") {
+          var artistFromSongList = handleData(data, keys);
+          hideSpinner();
+          setArtistInfo(artistFromSongList);
+          setSongInfo('');
+          setArtistSongInfo('');
+          setHeaderText('Artist Information');
+        }
+        else {
+          handleErrors(data[keys[0]]);
+        }
+      })
+      .catch((error) => {
+        handleErrors(error);
+      });
   }
 
   // Get Artist from song search button
@@ -176,25 +189,25 @@ function App() {
     hideErrorAlert();
     showSpinner();
     e.preventDefault();
-    fetch('/artistsong?artist='+artistName +'&song='+songName).then(res => res.json()).then(data => {
-      var keys = Object.getOwnPropertyNames(data);
-      if (keys[0] !== "error") {
-        var artistSongFromSongList = handleData(data, keys);
-        hideSpinner();
-        setArtistSongInfo(artistSongFromSongList);
-        setArtistInfo('');
-        setSongInfo('');
-        setHeaderText('Artist & Song Information');
-      }
-      else {
-        showErrorAlert();
-        setErrorInfo('Error: ' + data[keys[0]]);
-      }
-    })
-    .catch((error) => {
-      showErrorAlert();
-      setErrorInfo('Error: ' + error);
-    });
+    fetch('/artistsong?artist='+artistName +'&song='+songName)
+      .then(fetchErrors)
+      .then(data => {
+        var keys = Object.getOwnPropertyNames(data);
+        if (keys[0] !== "error") {
+          var artistSongFromSongList = handleData(data, keys);
+          hideSpinner();
+          setArtistSongInfo(artistSongFromSongList);
+          setArtistInfo('');
+          setSongInfo('');
+          setHeaderText('Artist & Song Information');
+        }
+        else {
+          handleErrors(data[keys[0]]);
+        }
+      })
+      .catch((error) => {
+        handleErrors(error);
+      });
   }
 
   // Map buttons from song search
