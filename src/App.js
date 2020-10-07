@@ -44,17 +44,11 @@ function App() {
     spinner.className = spinner.className.replace("show", "");
   }
 
+  // Clear all info
   var clearAllInfo = () => {
     setArtistSongInfo('');
     setArtistInfo('');
     setSongInfo('');
-  }
-
-  // Show Error Alert Div
-  var showErrorAlert = () => {
-    hideSpinner();
-    errorAlert.className = "show";
-    clearAllInfo();
   }
 
   // Hide Error Alert Div
@@ -64,7 +58,9 @@ function App() {
 
   // Show Alert Box and display error
   var handleErrors = (errorText) => {
-    showErrorAlert();
+    hideSpinner();
+    clearAllInfo();
+    errorAlert.className = "show";
     setErrorInfo('Error: ' + errorText);
   }
 
