@@ -44,13 +44,17 @@ function App() {
     spinner.className = spinner.className.replace("show", "");
   }
 
+  var clearAllInfo = () => {
+    setArtistSongInfo('');
+    setArtistInfo('');
+    setSongInfo('');
+  }
+
   // Show Error Alert Div
   var showErrorAlert = () => {
     hideSpinner();
     errorAlert.className = "show";
-    setArtistSongInfo('');
-    setArtistInfo('');
-    setSongInfo('');
+    clearAllInfo();
   }
 
   // Hide Error Alert Div
@@ -58,19 +62,19 @@ function App() {
     errorAlert.className = errorAlert.className.replace("show", "");
   }
 
-
-  function handleErrors(errorText) {
+  // Show Alert Box and display error
+  var handleErrors = (errorText) => {
     showErrorAlert();
     setErrorInfo('Error: ' + errorText);
   }
 
-  function fetchErrors(response) {
+  // Catch http errors from fetch()
+  var fetchErrors = (response) => {
     if (!response.ok) {
         handleErrors(response.status + response.statusText);
     }
     return response.json();
   }
-
 
   // Handle form submission and API Calls
   var mySubmitHandler = (event) => {
@@ -86,9 +90,8 @@ function App() {
           if (keys[0] !== "error") {
             var artistSongDisplay = handleData(data, keys);
             hideSpinner();
+            clearAllInfo();
             setArtistSongInfo(artistSongDisplay);
-            setArtistInfo('');
-            setSongInfo('');
             setHeaderText('Artist & Song Information');
           }
           else {
@@ -107,9 +110,8 @@ function App() {
           if (keys[0] !== "error") {
             var artistDisplay = handleData(data, keys);
             hideSpinner();
+            clearAllInfo();
             setArtistInfo(artistDisplay);
-            setSongInfo('');
-            setArtistSongInfo('');
             setHeaderText('Artist Information');
           }
           else {
@@ -128,9 +130,8 @@ function App() {
           if (keys[0] !== "error") {
             var tracksDisplay = handleData(data, keys);
             hideSpinner();
+            clearAllInfo();
             setSongInfo(tracksDisplay);
-            setArtistInfo('');
-            setArtistSongInfo('');
             setHeaderText('Song(s) Information');
           }
           else {
@@ -170,9 +171,8 @@ function App() {
         if (keys[0] !== "error") {
           var artistFromSongList = handleData(data, keys);
           hideSpinner();
+          clearAllInfo();
           setArtistInfo(artistFromSongList);
-          setSongInfo('');
-          setArtistSongInfo('');
           setHeaderText('Artist Information');
         }
         else {
@@ -196,9 +196,8 @@ function App() {
         if (keys[0] !== "error") {
           var artistSongFromSongList = handleData(data, keys);
           hideSpinner();
+          clearAllInfo();
           setArtistSongInfo(artistSongFromSongList);
-          setArtistInfo('');
-          setSongInfo('');
           setHeaderText('Artist & Song Information');
         }
         else {
